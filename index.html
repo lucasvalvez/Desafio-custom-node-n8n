@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Intervalo</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #fff4e6, #ffd9b3);
+        }
+        .container {
+            box-sizing: border-box;
+            border-radius: 16px;
+            padding: 36px 28px;
+            background: #fffaf0;
+            min-width: 320px;
+            max-width: 400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(255,140,0,0.2);
+            transition: transform 0.2s ease;
+        }
+        .container:hover {
+            transform: translateY(-4px);
+        }
+        h2 {
+            color: #e67e22;
+            margin-bottom: 24px;
+        }
+        label {
+            margin: 8px 0 4px 0;
+            font-weight: 500;
+            color: #d35400;
+        }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            border: 1.5px solid #f0ad4e;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #e67e22;
+        }
+        button {
+            margin-top: 12px;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #e67e22;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        button:hover {
+            background: #d35400;
+            transform: translateY(-2px);
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #d35400;
+        }
+        .info-label {
+            display: block; 
+            margin-top: 16px; 
+            color: #b85c00;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .range-display {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: 20px; 
+            width: 100%; 
+            padding: 12px; 
+            background: #ffe6cc; 
+            border-radius: 10px;
+        }
+        .range-display div {
+            flex: 1; 
+            text-align: center; 
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .range-display .min { color: #e67e22; }
+        .range-display .max { color: #f39c12; }
+        #timestamp {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #b85c00;
+        }
+        a {
+            color: #d35400;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Gerador de Valor Aleatório</h2>
+        <form id="intervalForm">
+            <label for="min">Mínimo:</label>
+            <input type="number" id="min" name="min" required>
+            <label for="max">Máximo:</label>
+            <input type="number" id="max" name="max" required>
+            <button type="submit">Consultar</button>
+        </form>
+        <span class="info-label">
+            O dado aleatório é obtido de <a href="https://random.org" target="_blank">random.org</a>
+        </span>
+        <div id="result"></div>
+        <div class="range-display">
+            <div class="min">
+                <span>Mínimo:</span> <span id="minValue"></span>
+            </div>
+            <div class="max">
+                <span>Máximo:</span> <span id="maxValue"></span>
+            </div>
+        </div>
+        <div id="timestamp"></div>
+    </div>
+    <script>
+        document.getElementById('intervalForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const min = document.getElementById('min').value;
+            const max = document.getElementById('max').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Consultando...';
+            document.getElementById('minValue').textContent = min;
+            document.getElementById('maxValue').textContent = max;
+            document.getElementById('timestamp').textContent = new Date().toLocaleString();
+            try {
+                   const response = await fetch(`http://localhost:5678/webhook/randomValue`, {
+                    method: 'POST',
+                     body: JSON.stringify({ min, max }),
+                });
+                if (!response.ok) throw new Error('Erro na consulta');
+                const data = await response.json();
+                console.log(data);
+                resultDiv.textContent = JSON.stringify(data.random, null, 2);
+                
+            } catch (err) {
+                resultDiv.textContent = 'Erro: ' + err.message;
+            }
+        });
+    </script>
+</body>
+</html>

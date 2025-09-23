@@ -1,0 +1,84 @@
+{
+  "name": "Randow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "randomValue",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "049ed370-6f26-4073-b5a6-ea9553521642",
+      "name": "Webhook",
+      "webhookId": "c05af842-5fbc-4743-a2d0-dabad4c82ff9"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "6f82d9bc-bf00-4518-a718-03d6ae52f0e3",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "min": "={{JSON.parse($json.body).min}}",
+        "max": "={{JSON.parse($json.body).max}}"
+      },
+      "type": "CUSTOM.random",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "2aae07ea-458e-4847-bdce-8164e3295348",
+      "name": "Random"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Random",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fcdd2f81-6d3e-4bc0-9789-cdf31b65246d",
+  "meta": {
+    "instanceId": "09eb29b13e2eb4aa47edba5cc567ceacc7678c4cce5d229c17e0ba29615c9031"
+  },
+  "id": "4pEv1eyK5dSmktPB",
+  "tags": []
+}
